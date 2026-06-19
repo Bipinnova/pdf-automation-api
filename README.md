@@ -89,21 +89,29 @@ pdf_automation_api/
 │   ├── main.py
 │   │
 │   ├── routers/
-│   │   └── pdf_generator.py
+│   │   ├── pdf_generator.py
+│   │   ├── pdf_extractor.py
+│   │   ├── table_extractor.py
+│   │   └── excel_to_pdf.py
 │   │
 │   ├── schemas/
 │   │   └── pdf_schema.py
 │   │
 │   ├── services/
-│   │   └── pdf_service.py
+│   │   ├── pdf_service.py
+│   │   ├── extract_service.py
+│   │   ├── table_service.py
+│   │   └── excel_service.py
 │   │
 │   └── utils/
-│       └── pdf_helpers.py
+│       └── file_handler.py
 │
 ├── uploads/
+│
 ├── outputs/
 │
 ├── requirements.txt
+│
 └── README.md
 ```
 
