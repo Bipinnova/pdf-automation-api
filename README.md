@@ -2,84 +2,118 @@
 
 ## Overview
 
-PDF Automation API is a reusable and scalable FastAPI-based application that generates dynamic PDF documents from JSON input.
+PDF Automation API is a FastAPI-based application that provides multiple PDF processing capabilities through REST APIs.
 
-Unlike traditional PDF generators that are built for a single use case, this project follows a generic content-driven approach that allows users to create different types of PDFs such as:
+The project is designed using a layered architecture and supports:
 
-* Resumes
-* Invoices
+* Dynamic PDF Generation
+* PDF Text Extraction
+* PDF Table Extraction
+* Excel to PDF Conversion
+* File Upload & Processing
+* Reusable PDF Components
+
+This project demonstrates how to build scalable backend services using FastAPI, Pydantic, and Python libraries such as FPDF, PyMuPDF, Pandas, and Tabula.
+
+---
+
+# Features
+
+## 1. Dynamic PDF Generation
+
+Generate custom PDF documents using JSON input.
+
+Supported Components:
+
+* Headings
+* Paragraphs
+* Images
+* Tables
+* Bullet Lists
+* Dynamic Content
+
+Example Use Cases:
+
+* Resume Generator
+* Invoice Generator
 * Reports
 * Certificates
 * Product Catalogs
 * Employee Profiles
-* Educational Documents
-* Research Papers
-* Animal Information Sheets
-* Custom PDF Documents
-
-The API receives structured JSON data and converts it into professionally formatted PDF documents.
 
 ---
 
-## Features
+## 2. PDF Text Extraction
 
-### Dynamic PDF Generation
+Extract text from uploaded PDF files using PyMuPDF.
 
-Generate PDF documents using API requests.
+Workflow:
 
-### Heading Support
-
-Create section titles with configurable:
-
-* Font Family
-* Font Size
-* Bold
-* Italic
-* Underline
-* Alignment
-
-### Paragraph Support
-
-Add large blocks of text with automatic wrapping.
-
-### Bullet Lists
-
-Generate ordered and unordered content sections.
-
-### Dynamic Tables
-
-Create tables with:
-
-* Dynamic Columns
-* Dynamic Rows
-* Auto Width Calculation
-* Custom Data
-
-### Image Support
-
-Insert images with:
-
-* Custom Width
-* Custom Height
-* Position Control
-
-### Formatting Options
-
-Control:
-
-* Page Orientation
-* Page Size
-* Margins
-* Font Styles
-* Alignment
-
-### Reusable Architecture
-
-The same API can generate multiple document types without changing the code.
+PDF → Text Extraction → JSON Response
 
 ---
 
-## Project Structure
+## 3. PDF Table Extraction
+
+Extract tables from PDF files and convert them into:
+
+* CSV
+* Excel
+
+Workflow:
+
+PDF → Table Detection → CSV / XLSX
+
+---
+
+## 4. Excel to PDF Conversion
+
+Read Excel files using Pandas and generate PDF documents automatically.
+
+Workflow:
+
+Excel → Read Rows → Generate PDFs
+
+---
+
+# Project Architecture
+
+```text
+                Client
+                  |
+                  |
+          (Swagger/Postman)
+                  |
+                  v
+          FastAPI Endpoint
+                  |
+                  v
+              Router
+                  |
+                  v
+          Request Validation
+             (Pydantic)
+                  |
+                  v
+              Service
+       (Business Logic Layer)
+                  |
+                  v
+      PDF / Excel / Table Logic
+                  |
+                  v
+          File Generation
+                  |
+                  v
+         outputs/ Directory
+                  |
+                  v
+          API Response
+```
+
+---
+
+# Folder Structure
 
 ```text
 pdf_automation_api/
@@ -89,190 +123,238 @@ pdf_automation_api/
 │   ├── main.py
 │   │
 │   ├── routers/
-│   │   └── pdf_generator.py
+│   │   ├── pdf_generator.py
+│   │   ├── pdf_extractor.py
+│   │   ├── table_extractor.py
+│   │   └── excel_to_pdf.py
 │   │
 │   ├── schemas/
 │   │   └── pdf_schema.py
 │   │
 │   ├── services/
-│   │   └── pdf_service.py
+│   │   ├── pdf_service.py
+│   │   ├── extract_service.py
+│   │   ├── table_service.py
+│   │   └── excel_service.py
 │   │
 │   └── utils/
-│       └── pdf_helpers.py
+│       └── file_handler.py
 │
 ├── uploads/
+│
 ├── outputs/
 │
 ├── requirements.txt
+│
 └── README.md
 ```
 
 ---
 
-## Technology Stack
+# Workflow Explanation
 
-### Backend
+## main.py
 
-* Python
-* FastAPI
+Application entry point.
 
-### PDF Generation
+Responsibilities:
+
+* Create FastAPI instance
+* Register routers
+* Start application
+
+---
+
+## routers/
+
+Responsible for handling HTTP requests.
+
+Examples:
+
+* POST /pdf/generate
+* POST /extract/text
+* POST /table/extract
+* POST /excel/generate-pdfs
+
+Responsibilities:
+
+* Receive request
+* Validate request
+* Call service layer
+* Return response
+
+---
+
+## schemas/
+
+Responsible for request validation.
+
+Uses:
+
+* Pydantic Models
+
+Responsibilities:
+
+* Validate incoming data
+* Enforce required fields
+* Return 422 errors for invalid requests
+
+---
+
+## services/
+
+Contains all business logic.
+
+### pdf_service.py
+
+Responsible for:
+
+* PDF generation
+* Dynamic content rendering
+* Table rendering
+* Image rendering
+
+Uses:
 
 * FPDF2
 
-### Data Validation
+---
 
-* Pydantic
+### extract_service.py
 
-### API Documentation
+Responsible for:
 
-* Swagger UI
+* Extracting text from PDFs
+
+Uses:
+
+* PyMuPDF
 
 ---
 
-## API Workflow
+### table_service.py
 
-```text
-Client
-   |
-   v
+Responsible for:
 
-FastAPI Endpoint
+* Extracting tables from PDFs
+* Exporting CSV files
+* Exporting Excel files
 
-   |
-   v
+Uses:
 
-Request Validation (Pydantic)
-
-   |
-   v
-
-PDF Service Layer
-
-   |
-   v
-
-FPDF Engine
-
-   |
-   v
-
-Generated PDF
-
-   |
-   v
-
-Response
-```
+* tabula-py
 
 ---
 
-## Example Use Cases
+### excel_service.py
 
-### Resume Generator
+Responsible for:
 
-Generate professional resumes dynamically.
+* Reading Excel files
+* Generating PDF documents from rows
 
-### Invoice Generator
+Uses:
 
-Generate customer invoices using JSON data.
-
-### Certificate Generator
-
-Generate training and achievement certificates.
-
-### Report Generator
-
-Generate business and analytical reports.
-
-### Product Catalog Generator
-
-Generate catalogs containing images and descriptions.
+* Pandas
+* FPDF2
 
 ---
 
-## API Endpoint
+## uploads/
 
-### Generate PDF
+Stores uploaded files temporarily.
+
+Examples:
+
+* PDF files
+* Images
+* Excel files
+
+---
+
+## outputs/
+
+Stores generated files.
+
+Examples:
+
+* output.pdf
+* output.csv
+* output.xlsx
+
+---
+
+# API Endpoints
+
+## Generate PDF
 
 ```http
 POST /pdf/generate
 ```
 
+Generate dynamic PDF documents.
+
 ---
 
-## Sample Request
+## Extract Text From PDF
 
-```json
-{
-  "title": "Employee Profile",
-
-  "elements": [
-
-    {
-      "type": "heading",
-      "text": "Personal Information",
-      "font_size": 18,
-      "bold": true
-    },
-
-    {
-      "type": "paragraph",
-      "text": "Employee details and profile information."
-    },
-
-    {
-      "type": "table",
-      "table": {
-        "headers": [
-          "Field",
-          "Value"
-        ],
-        "rows": [
-          [
-            "Name",
-            "John Doe"
-          ],
-          [
-            "Department",
-            "IT"
-          ]
-        ]
-      }
-    }
-  ]
-}
+```http
+POST /extract/text
 ```
 
+Extract text from uploaded PDFs.
+
 ---
 
-## Installation
+## Extract Tables From PDF
 
-Clone repository:
+```http
+POST /table/extract
+```
+
+Extract tables and export to CSV/Excel.
+
+---
+
+## Generate PDFs From Excel
+
+```http
+POST /excel/generate-pdfs
+```
+
+Generate multiple PDF documents from Excel rows.
+
+---
+
+# Installation
+
+Clone Repository
 
 ```bash
-git clone https://github.com/your-username/pdf-automation-api.git
+git clone https://github.com/Bipinnova/pdf-automation-api.git
 ```
 
-Move into project:
+Move Into Project
 
 ```bash
 cd pdf-automation-api
 ```
 
-Create virtual environment:
+Create Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-Activate environment:
+Activate Environment
+
+Windows:
 
 ```bash
 venv\Scripts\activate
 ```
 
-Install dependencies:
+Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -280,7 +362,7 @@ pip install -r requirements.txt
 
 ---
 
-## Running the Application
+# Running The Project
 
 ```bash
 uvicorn app.main:app --reload
@@ -300,25 +382,52 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## Future Enhancements
+# Technologies Used
+
+Backend
+
+* Python
+* FastAPI
+
+PDF Processing
+
+* FPDF2
+* PyMuPDF
+* tabula-py
+
+Data Processing
+
+* Pandas
+* OpenPyXL
+
+Validation
+
+* Pydantic
+
+API Documentation
+
+* Swagger UI
+
+---
+
+# Future Enhancements
 
 * Header & Footer Support
 * Page Numbering
 * Watermark Support
 * QR Code Generation
 * Barcode Generation
-* HTML to PDF
-* Excel to PDF
-* Word to PDF
-* Digital Signatures
+* HTML to PDF Conversion
+* Word to PDF Conversion
 * PDF Encryption
 * PDF Merging
 * PDF Splitting
 * Cloud Storage Integration
+* Authentication & Authorization
 
 ---
 
-## Author
+# Author
 
 Bipin Yadav
 
