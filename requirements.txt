@@ -1,0 +1,20 @@
+fastapi
+uvicorn
+pydantic
+python-multipart
+
+# PDF Generation
+fpdf2
+
+# PDF Text Extraction
+PyMuPDF
+
+# Excel Handling
+pandas
+openpyxl
+
+# PDF Table Extraction
+tabula-py
+
+# Optional Utilities
+python-dotenv

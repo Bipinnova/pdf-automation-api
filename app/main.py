@@ -18,6 +18,6 @@ app.include_router(table_extractor.router)
 app.include_router(excel_to_pdf.router)
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def home():
     return {"message": "PDF Automation API Running"}
